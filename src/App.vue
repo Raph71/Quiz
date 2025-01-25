@@ -21,6 +21,7 @@
 
       const data = await response.json();
       quiz.value = data;
+      console.log('Questions récupérées :', quiz.value.questions);
     } catch (error) {
       console.error('Erreur lors de la récupération des questions :', error);
     } finally {
