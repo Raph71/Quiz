@@ -2,9 +2,8 @@
     <div id="question">
         <h2>{{ question.question }}</h2>
         <ul>
-            <li v-for="answer in question.choices" :key="answer">
-                <input type="radio" :id="answer" :name="`question-${currentStep}`" :value="answer" v-model="selectedAnswer">
-                <label :for="answer">{{ answer }}</label>
+            <li v-for="(answer, index) in randomChoices" :key="answer">
+                <Choix :id="`choix${index}`" :disabled="hasanswered" :value="answer" :correctAnswer="question.correct_answer" v-model="selectedAnswer"/>
             </li>
         </ul>
         <button @click="nextQuestion">Question suivante</button>
@@ -12,12 +11,15 @@
 </template>
 
 <script setup>
-    import { ref, watch } from 'vue';
+    import { computed, ref, watch } from 'vue';
+    import Choix from './Choix.vue';
+import { shuffleArray } from '@/array';
     
     const selectedAnswer = ref('');
-    
+    const hasanswered = computed(() => selectedAnswer.value !== '');
 
-    defineProps({
+    
+    const props = defineProps({
         question: Object,
         currentStep: Number
     })
@@ -33,4 +35,16 @@
             selectedAnswer.value = '';
         }
     }
+    // Shuffle the choices
+    const randomChoices = computed(() => shuffleArray(props.question.choices));
 </script>
+
+<style>
+#question {
+    margin-top: 2rem;
+}
+#question button{
+    margin-left: auto;
+    display: block;
+}
+</style>
